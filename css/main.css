@@ -8,3 +8,8 @@ body {
 #map {
     height: 600px;
 }
+
+.gm-style-iw {
+    width: 150px;
+    height: 150px;
+}

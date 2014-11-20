@@ -23,5 +23,56 @@ $(document).ready(function() {
         center: center,
         zoom: 12
 
-    }); // elem which you want map to appear, and the center and zoom level
+    });// elem which you want map to appear, and the center and zoom level
+
+    var infoWindow = new google.maps.InfoWindow();
+
+    var stations;
+    var markers = [];
+
+    $.getJSON('https://data.cityofchicago.org/resource/alternative-fuel-locations.json')
+        .done(function(data) {
+            stations = data;
+
+            data.forEach(function(station, itemIndex) {
+               var marker = new google.maps.Marker({
+                   position: {
+                       lat: Number(station.location.latitude),
+                       lng: Number(station.location.longitude)
+                   }, map: map
+               });
+               markers.push(marker);
+
+               google.maps.event.addListener(marker, 'click', function() {
+                  var html = '<h2>' + station.station_name + '</h2>';
+                   html+= '<p>' + station.street_address + '</p>';
+
+                  infoWindow.setContent(html);
+                  infoWindow.open(map, this);
+               });
+            });
+        })
+        // to remove a marker from a map, set the marker to a variable, call marker.setMap? method and pass null
+        // to reshow the markers, setMap = map... and go through the search again
+
+        // every object has camera label which has description of where camera is/what it's looking at
+        // don't use angular
+        // there is an angular google maps shin library, too complicated
+        // think about it not with angular, but with javascript
+        // iterate with foreach, .indexOf of a javascript string to see if mthis substring is in the string.
+        // remember to ignore case, make both strings lower case, and then compare two lowercase strings
+        // index of associated, add corresponding marker in same marker. If I'm on index 5 of stations, the corresponding
+        // marker is marker 5.
+        // corresponding itemIndex in forEach like above, iterate over traffic cameras, does it satisfy search criteria?
+        // if doesn't get corresponding marker and setMap= nul
+        // redo markers by foreach and going back over
+        // keyup and search can be caught by bind
+        .fail(function() {
+
+        })
+
+        .always(function() { // like .finally
+            $('#ajax-loader').fadeOut();
+        });
+
 });
